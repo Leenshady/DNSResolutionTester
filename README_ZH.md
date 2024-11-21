@@ -26,7 +26,7 @@ pip install dnspython
 pip install numpy
 pip install pandas
 ```
-在DNSResolutionTester路径中运行。
+在DNSperf路径下运行。
 ```cmd
-python DNSResolutionTester.py
+python DNSperf.py
 ```

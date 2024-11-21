@@ -26,7 +26,7 @@ pip install dnspython
 pip install numpy
 pip install pandas
 ```
-Run in DNSResolutionTester path.
+Run in DNSperf path.
 ```cmd
-python DNSResolutionTester.py
+python DNSperf.py
 ```

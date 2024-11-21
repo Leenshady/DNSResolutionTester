@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import json
 
-def dns_test(domain,dns_server):
+def dns_test(domain_name,dns_server):
     elapsed_times = []
     i = 0
     resolver = dns.resolver.Resolver()
@@ -13,7 +13,7 @@ def dns_test(domain,dns_server):
     while(i<10):
         try:
             start_time = time.perf_counter()
-            resolver.resolve(domain,"A")
+            resolver.resolve(domain_name,"A")
             end_time = time.perf_counter()
             # for rdata in answers:
             #     print(rdata.to_text())
@@ -60,9 +60,9 @@ def process(resolve_times):
         #print("All resolving has failed.")
     return {"success_rate":success_rate,"max_time":max_time,"min_time":min_time,"avg_time":avg_time,"mean_deviation":mean_deviation}
 
-def dns_process(domain,resolve_times):
+def dns_process(domain_name,resolve_times):
     res = process(resolve_times)
-    new_row = {"Domain":domain,
+    new_row = {"Domain":domain_name,
             "One":str(resolve_times[0])+"ms",
             "Two":str(resolve_times[1])+"ms",
             "Three":str(resolve_times[2])+"ms",
@@ -90,8 +90,8 @@ if __name__=="__main__":
     #dns_servers = ["223.5.5.5","223.6.6.6","119.29.29.29","114.114.114.114","8.8.8.8","101.226.4.6","218.30.118.6"]
     with open('dns_servers.json', 'r') as file:
         dns_servers = json.load(file)
-    with open('domains.json', 'r') as file:
-        domains = json.load(file)
+    with open('domain_names.json', 'r') as file:
+        domain_names = json.load(file)
     df_all = pd.DataFrame({
         "DNS server":[],
         "Success rate":[],
@@ -101,7 +101,6 @@ if __name__=="__main__":
         "Mean deviation of time":[]
     },index=[])
     i = 0
-    #df.columns = ["DNS server","Success rate","Max time","Min time","Average time","Mean deviation of time"]
     for dns_server in dns_servers:
         print(f"DNS server:{dns_server}")
         df_dns = pd.DataFrame({
@@ -120,14 +119,15 @@ if __name__=="__main__":
         },index=[])
         j = 0
         resolve_times = []
-        for domain in domains:
-            # print(f"Domain:{domain},DNS Server:{dns_server}")
-            test_result = dns_test(domain,dns_server)
+        for domain_name in domain_names:
+            # print(f"Domain Name:{domain_name},DNS Server:{dns_server}")
+            test_result = dns_test(domain_name,dns_server)
             resolve_times.extend(test_result)
-            df_dns.loc[j] = dns_process(domain,test_result)
+            df_dns.loc[j] = dns_process(domain_name,test_result)
             j = j+1
         print(df_dns)
+        print("----------------")
         df_all.loc[i] = summary_process(dns_server,resolve_times)
         i=i+1
     print(df_all)
-    print("\nHint:Mean deviation of time less is better")
+    print("\nTips:Mean deviation of time less is better.")

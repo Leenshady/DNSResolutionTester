@@ -90,7 +90,7 @@ def overall_data_to_row(dns_server,resolve_times):
     return new_row
 
 if __name__=="__main__":
-    with open('dns_servers.json', 'r') as file:
+    with open('dns_servers.json', 'r', encoding='utf-8') as file:
         dns_servers = json.load(file)
     with open('domain_names.json', 'r') as file:
         domain_names = json.load(file)
@@ -102,9 +102,18 @@ if __name__=="__main__":
         "Average time":[],
         "Mean deviation of time":[]
     },index=[])
+    # 设置列名与值对齐
+    pd.set_option('display.unicode.ambiguous_as_wide', True)
+    pd.set_option('display.unicode.east_asian_width', True)
+    # 显示所有列
+    pd.set_option('display.max_columns', None)
+    # # 显示所有行
+    pd.set_option('display.max_rows', None)
+    # 不换行显示
+    pd.set_option('display.width', 1000)
     i = 0
     for dns_server in dns_servers:
-        print(f"DNS server:{dns_server}")
+        print(f"DNS server:{dns_server['name']}[{dns_server['ip']}]")
         df_single_perf = pd.DataFrame({
             "Domain":[],
             "Test1":[],
@@ -122,13 +131,16 @@ if __name__=="__main__":
         j = 0
         resolve_times = []
         for domain_name in domain_names:
-            test_result = dns_perf_test(domain_name,dns_server)
+            test_result = dns_perf_test(domain_name,dns_server['ip'])
             resolve_times.extend(test_result)
             df_single_perf.loc[j] = single_data_to_row(domain_name,test_result)
             j = j+1
         print(df_single_perf)
         print("----------------")
-        df_overall_perf.loc[i] = overall_data_to_row(dns_server,resolve_times)
+        dns_server_title = dns_server['name'] + '[' + dns_server['ip'] + ']'
+        df_overall_perf.loc[i] = overall_data_to_row(dns_server_title, resolve_times)
         i=i+1
+    # 按照Mean deviation of time排序
+    df_overall_perf = df_overall_perf.sort_values(by='Mean deviation of time', ascending=False)
     print(df_overall_perf)
     print("\nTips:Mean deviation of time less is better.")

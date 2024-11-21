@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 import json
 
-def dns_test(domain_name,dns_server):
+# DNS循环10次解析同一域名并记录耗时
+def dns_perf_test(domain_name,dns_server):
     elapsed_times = []
     i = 0
     resolver = dns.resolver.Resolver()
@@ -34,7 +35,8 @@ def dns_test(domain_name,dns_server):
         i = i+1
     return elapsed_times
 
-def process(resolve_times):
+# 统计解析成功率、最大耗时、最小耗时、平均耗时、平均差
+def statistics(resolve_times):
     tmp_array = np.array(resolve_times)
     # 使用布尔索引选择非负元素
     non_negative_indices = tmp_array >= 0
@@ -46,53 +48,53 @@ def process(resolve_times):
     if(len(success_array)>0):
         max_time = np.max(success_array)
         min_time = np.min(success_array)
-        avg_time = np.round(np.mean(success_array),2)
+        mean_time = np.round(np.mean(success_array),2)
         # 计算每个数据点到均值的绝对偏差
-        absolute_deviations = np.abs(success_array - avg_time)
+        absolute_deviations = np.abs(success_array - mean_time)
         # 计算平均差
         mean_deviation = np.round(np.mean(absolute_deviations),2)
-        #print(f"Average resolving time:{avg_time}ms")
+        #print(f"Average resolving time:{mean_time}ms")
     else:
         max_time = "-"
         min_time = "-"
-        avg_time = "-"
+        mean_time = "-"
         mean_deviation = "-"
         #print("All resolving has failed.")
-    return {"success_rate":success_rate,"max_time":max_time,"min_time":min_time,"avg_time":avg_time,"mean_deviation":mean_deviation}
+    return {"success_rate":success_rate,"max_time":max_time,"min_time":min_time,"mean_time":mean_time,"mean_deviation":mean_deviation}
 
-def dns_process(domain_name,resolve_times):
-    res = process(resolve_times)
+# DNS单次测试数据转换成DataFrame行
+def single_data_to_row(domain_name,resolve_times):
+    res = statistics(resolve_times)
     new_row = {"Domain":domain_name,
-            "One":str(resolve_times[0])+"ms",
-            "Two":str(resolve_times[1])+"ms",
-            "Three":str(resolve_times[2])+"ms",
-            "Four":str(resolve_times[3])+"ms",
-            "Five":str(resolve_times[4])+"ms",
-            "Six":str(resolve_times[5])+"ms",
-            "Seven":str(resolve_times[6])+"ms",
-            "Eight":str(resolve_times[7])+"ms",
-            "Nine":str(resolve_times[8])+"ms",
-            "Ten":str(resolve_times[9])+"ms",
+            "Test1":str(resolve_times[0])+"ms",
+            "Test2":str(resolve_times[1])+"ms",
+            "Test3":str(resolve_times[2])+"ms",
+            "Test4":str(resolve_times[3])+"ms",
+            "Test5":str(resolve_times[4])+"ms",
+            "Test6":str(resolve_times[5])+"ms",
+            "Test7":str(resolve_times[6])+"ms",
+            "Test8":str(resolve_times[7])+"ms",
+            "Test9":str(resolve_times[8])+"ms",
+            "Test10":str(resolve_times[9])+"ms",
             "Success_rate":str(res["success_rate"])+"%",
             "Max time":str(res["max_time"])+"ms",
-            "Average time":str(res["avg_time"])+"ms"}
+            "Average time":str(res["mean_time"])+"ms"}
     return new_row
 
-def summary_process(dns_server,resolve_times):
-    res = process(resolve_times)
+# DNS整体测试数据转换成DataFrame行
+def overall_data_to_row(dns_server,resolve_times):
+    res = statistics(resolve_times)
     new_row = {"DNS server": dns_server, "Success rate":str(res['success_rate'])+"%",
-                "Max time":str(res["max_time"])+"ms","Min time":str(res['min_time'])+"ms","Average time":str(res["avg_time"])+"ms",
+                "Max time":str(res["max_time"])+"ms","Min time":str(res['min_time'])+"ms","Average time":str(res["mean_time"])+"ms",
                 "Mean deviation of time":res["mean_deviation"]}
     return new_row
 
 if __name__=="__main__":
-    #domains = ["www.baidu.com","www.qq.com","www.sina.com","www.taobao.com","www.bilibili.com","www.douyin.com","www.google.com","www.youtube.com"]
-    #dns_servers = ["223.5.5.5","223.6.6.6","119.29.29.29","114.114.114.114","8.8.8.8","101.226.4.6","218.30.118.6"]
     with open('dns_servers.json', 'r') as file:
         dns_servers = json.load(file)
     with open('domain_names.json', 'r') as file:
         domain_names = json.load(file)
-    df_all = pd.DataFrame({
+    df_overall_perf = pd.DataFrame({
         "DNS server":[],
         "Success rate":[],
         "Max time":[],
@@ -103,31 +105,30 @@ if __name__=="__main__":
     i = 0
     for dns_server in dns_servers:
         print(f"DNS server:{dns_server}")
-        df_dns = pd.DataFrame({
+        df_single_perf = pd.DataFrame({
             "Domain":[],
-            "One":[],
-            "Two":[],
-            "Four":[],
-            "Five":[],
-            "Six":[],
-            "Seven":[],
-            "Eight":[],
-            "Nine":[],
-            "Ten":[],
+            "Test1":[],
+            "Test2":[],
+            "Test3":[],
+            "Test4":[],
+            "Test5":[],
+            "Test7":[],
+            "Test8":[],
+            "Test9":[],
+            "Test10":[],
             "Max time":[],
             "Average time":[],
         },index=[])
         j = 0
         resolve_times = []
         for domain_name in domain_names:
-            # print(f"Domain Name:{domain_name},DNS Server:{dns_server}")
-            test_result = dns_test(domain_name,dns_server)
+            test_result = dns_perf_test(domain_name,dns_server)
             resolve_times.extend(test_result)
-            df_dns.loc[j] = dns_process(domain_name,test_result)
+            df_single_perf.loc[j] = single_data_to_row(domain_name,test_result)
             j = j+1
-        print(df_dns)
+        print(df_single_perf)
         print("----------------")
-        df_all.loc[i] = summary_process(dns_server,resolve_times)
+        df_overall_perf.loc[i] = overall_data_to_row(dns_server,resolve_times)
         i=i+1
-    print(df_all)
+    print(df_overall_perf)
     print("\nTips:Mean deviation of time less is better.")

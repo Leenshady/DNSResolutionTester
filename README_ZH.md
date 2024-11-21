@@ -1,5 +1,5 @@
 # DNSResolutionTester
-- [English](README.md) | [中文](README_zh.md)  
+- [English](README.md) | [中文](README_ZH.md)  
 
 一个DNS解析测试工具，可以帮助您为本地网络选择最合适的DNS。
 # 如何使用

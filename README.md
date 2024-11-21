@@ -1,5 +1,5 @@
 # DNSResolutionTester
-- [English](README.md) | [中文](README_zh.md)  
+- [English](README.md) | [中文](README_ZH.md)  
 
 A DNS resolution tester that can help you choose the most suitable DNS for your local network.
 # How to use

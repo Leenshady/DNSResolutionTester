@@ -100,7 +100,7 @@ if __name__=="__main__":
             domain_names = json.load(file)
     except Exception as e:
         print(f"An error occurred: {e}")
-        print(f"Please check dns_servers.json and domain_name.json to confirm that they comply with the specifications.")
+        input("Press Enter to continue...")
     df_overall_perf = pd.DataFrame({
         "DNS server":[],
         "Success rate":[],
@@ -151,3 +151,4 @@ if __name__=="__main__":
     df_overall_perf = df_overall_perf.sort_values(by='Mean deviation of time', ascending=True)
     print(df_overall_perf)
     print("\nTips:Mean deviation of time less is better.")
+    input("Press Enter to continue...")

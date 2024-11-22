@@ -5,11 +5,23 @@ DNSperf is a DNS server performance tester that can help you choose the most sui
 # How to use
 You can add domain name that you want to test the DNS in domain_names.json.
 ```json
-["www.github.com","www.baidu.com"]
+[
+    "www.github.com",
+    "www.baidu.com"
+]
 ```
 You can add DNS server that you want to test in dns_server.json.
 ```json
-["8.8.8.8","223.5.5.5"]
+[
+    {
+        "name":"Google DNS",
+        "ip":"8.8.8.8"
+        },
+    {
+        "name":"Alibaba DNS",
+        "ip":"223.5.5.5"
+    }
+]
 ```
 # Develop Environment
 - Python 3.12.3  

@@ -65,7 +65,7 @@ def statistics(resolve_times):
 # DNS单次测试数据转换成DataFrame行
 def single_data_to_row(domain_name,resolve_times):
     res = statistics(resolve_times)
-    new_row = {"Domain":domain_name,
+    new_row = {"Domain name":domain_name,
             "Test1":str(resolve_times[0])+"ms",
             "Test2":str(resolve_times[1])+"ms",
             "Test3":str(resolve_times[2])+"ms",
@@ -84,16 +84,23 @@ def single_data_to_row(domain_name,resolve_times):
 # DNS整体测试数据转换成DataFrame行
 def overall_data_to_row(dns_server,resolve_times):
     res = statistics(resolve_times)
-    new_row = {"DNS server": dns_server, "Success rate":str(res['success_rate'])+"%",
-                "Max time":str(res["max_time"])+"ms","Min time":str(res['min_time'])+"ms","Average time":str(res["mean_time"])+"ms",
+    new_row = {"DNS server": dns_server,
+               "Success rate":str(res['success_rate'])+"%",
+                "Max time":str(res["max_time"])+"ms",
+                "Min time":str(res['min_time'])+"ms",
+                "Average time":str(res["mean_time"])+"ms",
                 "Mean deviation of time":res["mean_deviation"]}
     return new_row
 
 if __name__=="__main__":
-    with open('dns_servers.json', 'r', encoding='utf-8') as file:
-        dns_servers = json.load(file)
-    with open('domain_names.json', 'r') as file:
-        domain_names = json.load(file)
+    try:
+        with open('dns_servers.json', 'r', encoding='utf-8') as file:
+            dns_servers = json.load(file)
+        with open('domain_names.json', 'r') as file:
+            domain_names = json.load(file)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        print(f"Please check dns_servers.json and domain_name.json to confirm that they comply with the specifications.")
     df_overall_perf = pd.DataFrame({
         "DNS server":[],
         "Success rate":[],
@@ -107,7 +114,7 @@ if __name__=="__main__":
     pd.set_option('display.unicode.east_asian_width', True)
     # 显示所有列
     pd.set_option('display.max_columns', None)
-    # # 显示所有行
+    # 显示所有行
     pd.set_option('display.max_rows', None)
     # 不换行显示
     pd.set_option('display.width', 1000)
@@ -115,7 +122,7 @@ if __name__=="__main__":
     for dns_server in dns_servers:
         print(f"DNS server:{dns_server['name']}[{dns_server['ip']}]")
         df_single_perf = pd.DataFrame({
-            "Domain":[],
+            "Domain name":[],
             "Test1":[],
             "Test2":[],
             "Test3":[],
@@ -140,7 +147,7 @@ if __name__=="__main__":
         dns_server_title = dns_server['name'] + '[' + dns_server['ip'] + ']'
         df_overall_perf.loc[i] = overall_data_to_row(dns_server_title, resolve_times)
         i=i+1
-    # 按照Mean deviation of time排序
-    df_overall_perf = df_overall_perf.sort_values(by='Mean deviation of time', ascending=False)
+    # 按照Mean deviation of time从小到大排序
+    df_overall_perf = df_overall_perf.sort_values(by='Mean deviation of time', ascending=True)
     print(df_overall_perf)
     print("\nTips:Mean deviation of time less is better.")

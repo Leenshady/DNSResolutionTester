@@ -26,5 +26,7 @@ build/
 Thumbs.db
 
 # Windows打包BAT命令文件
-*.bat
 myenv/
+
+# 测试文件
+*test*.*

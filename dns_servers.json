@@ -37,6 +37,10 @@
         {
             "name": "DNSPod DoH",
             "addr": "https://doh.pub:443/dns-query"
+        },
+        {
+            "name": "Google DoH",
+            "addr": "https://dns.google/dns-query"
         }
     ]
 }

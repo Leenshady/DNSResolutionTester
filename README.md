@@ -27,16 +27,28 @@ You can add domain name that you want to test the DNS in domain_names.json.
 ```
 You can add DNS server that you want to test in dns_server.json.
 ```json
-[
-    {
-        "name":"Google DNS",
-        "ip":"8.8.8.8"
+{
+    "DNS": [
+        {
+            "name": "Alibaba DNS",
+            "addr": "223.5.5.5"
         },
-    {
-        "name":"Alibaba DNS",
-        "ip":"223.5.5.5"
-    }
-]
+        {
+            "name": "Google DNS",
+            "addr": "8.8.8.8"
+        }
+    ],
+    "DoH": [
+        {
+            "name": "Alibaba DoH",
+            "addr": "https://dns.alidns.com:443/dns-query"
+        },
+        {
+            "name": "Google DoH",
+            "addr": "https://dns.google/dns-query"
+        }
+    ]
+}
 ```
 ## Run
 Run source code.
@@ -47,7 +59,7 @@ Run source code with parameter.
 ```cmd
 python DNSperf.py --log result
 ```
-Run in windows with parameter.
+Run in Windows with parameter.
 ```cmd
 DNSperf.exe --log result
 ```

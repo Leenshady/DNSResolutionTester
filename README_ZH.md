@@ -27,16 +27,28 @@ pip install pandas
 ```
 您可以在 dns_server.json 中添加要测试的DNS服务器。
 ```json
-[
-    {
-        "name":"Google DNS",
-        "ip":"8.8.8.8"
+{
+    "DNS": [
+        {
+            "name": "Alibaba DNS",
+            "addr": "223.5.5.5"
         },
-    {
-        "name":"Alibaba DNS",
-        "ip":"223.5.5.5"
-    }
-]
+        {
+            "name": "Google DNS",
+            "addr": "8.8.8.8"
+        }
+    ],
+    "DoH": [
+        {
+            "name": "Alibaba DoH",
+            "addr": "https://dns.alidns.com:443/dns-query"
+        },
+        {
+            "name": "Google DoH",
+            "addr": "https://dns.google/dns-query"
+        }
+    ]
+}
 ```
 ## 运行
 运行源代码。
@@ -47,7 +59,7 @@ python DNSperf.py
 ```cmd
 python DNSperf.py --log result
 ```
-在windows系统中带参数运行。
+在Windows系统中带参数运行。
 ```cmd
 DNSperf.exe --log result
 ```

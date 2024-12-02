@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 import json
 import logging
-import traceback
 
 # 设置常量
 TYPE_DNS = "DNS"
@@ -153,6 +152,7 @@ def statistics(resolve_times):
         max_time = "-"
         min_time = "-"
         mean_time = "-"
+        # 为了方便排序，无法计算标准差时赋值为9999
         mean_deviation = "9999"
     return {"success_rate":success_rate,"max_time":max_time,"min_time":min_time,"mean_time":mean_time,"mean_deviation":mean_deviation}
 

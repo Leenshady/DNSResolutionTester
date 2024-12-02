@@ -1,22 +1,27 @@
 # DNSperf
 - [English](README.md) | [中文](README_ZH.md)  
 
-DNSperf是一个DNS服务器性能测试工具，可以帮助您为本地网络选择最合适的DNS。
+DNSperf是一个测试DNS服务器解析A记录性能的工具，可以帮助您为本地网络选择最合适的DNS。
+
 ## 开发环境
 - Python 3.12.3  
 
 您可以从 https://www.python.org/ 下载。
+
 ## 依赖库
-- dnspython 2.7.0
-- numpy 2.1.3
-- pandas 2.2.3  
+- dnspython
+- numpy
+- pandas
+- requests
 
 在 bash（Linux）或者cmd（Windows）中运行以下代码安装依赖库。
 ```cmd
 pip install dnspython
 pip install numpy
 pip install pandas
+pip install requests
 ```
+
 ## 配置
 您可以在 domain_names.json 中添加要用来测试DNS的域名。
 ```json
@@ -50,16 +55,28 @@ pip install pandas
     ]
 }
 ```
+
 ## 运行
 运行源代码。
 ```cmd
 python DNSperf.py
 ```
-带参数运行源代码。
+运行源代码，并将测试结果输出到result.log文件。
 ```cmd
 python DNSperf.py --log result
 ```
-在Windows系统中带参数运行。
+在Windows系统中运行DNSperf，并将测试结果输出到result.log文件。
 ```cmd
 DNSperf.exe --log result
 ```
+
+## DNS支持
+- [x] 支持DNS（IP Address）
+- [x] 支持DNS over HTTPS(RFC 8484，支持GET和POST)
+- [ ] 支持DNS over HTTPS(JSON API，支持GET)
+- [ ] 支持DNS over TLS
+- [ ] 增加熔断功能，多次解析无应答直接结束该DNS测试，避免等待时间过长
+- [ ] 优化DNS测试算法，避免触发QoS
+
+## 提醒
+因部分公共DNS采用了QoS策略，测试结果有可能不准确。
